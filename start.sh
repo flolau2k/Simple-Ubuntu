@@ -58,8 +58,14 @@ build_minilinux()
 run_minilinux()
 {
 	# create the container
-	echo "${blue}Creating container...${reset}"
-	docker run -it -v $PWD:/host/ --name $IMG_NAME -e DOCKER_CONTAINER_NAME=$IMG_NAME $IMG_NAME zsh
+	if [ "$(docker container ls -a | grep $IMG_NAME)" ]
+	then
+		echo "${blue}Restarting Container...${reset}"
+		docker start -ia $IMG_NAME
+	else
+		echo "${blue}Creating container...${reset}"
+		docker run -it -v $PWD:/host/ -v ~/.ssh:/root/.ssh --name $IMG_NAME -e DOCKER_CONTAINER_NAME=$IMG_NAME $IMG_NAME zsh
+	fi
 }
 
 launch_minilinux()

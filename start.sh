@@ -54,7 +54,7 @@ build_minilinux()
 run_minilinux()
 {
 	# create the container
-	if [ "$(docker ps -a | grep $IMG_NAME)" ]
+	if [ "$(docker image ls | grep $IMG_NAME)" ]
 	then
 		echo "${blue}Restarting Container...${reset}"
 		docker start -ia $IMG_NAME

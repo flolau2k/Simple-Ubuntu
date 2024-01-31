@@ -27,10 +27,6 @@ cyan=$'\033[1;96m'
 red=$'\033[0;31m'
 reset=$'\033[0;39m'
 
-
-
-
-
 start_docker()
 {
 	# start the docker daemon
@@ -58,11 +54,12 @@ build_minilinux()
 run_minilinux()
 {
 	# create the container
-	if [ "$(docker container ls -a | grep $IMG_NAME)" ]
+	if [ "$(docker ps -a | grep $IMG_NAME)" ]
 	then
 		echo "${blue}Restarting Container...${reset}"
 		docker start -ia $IMG_NAME
 	else
+    build_minilinux
 		echo "${blue}Creating container...${reset}"
 		docker run -it -v $PWD:/host/ -v ~/.ssh:/root/.ssh --name $IMG_NAME -e DOCKER_CONTAINER_NAME=$IMG_NAME $IMG_NAME zsh
 	fi
@@ -71,11 +68,10 @@ run_minilinux()
 launch_minilinux()
 {
 	# check if the container already exists
-	if [ "$(docker image ls | grep $IMG_NAME)" ]
+	if [ "$(docker ps | grep $IMG_NAME)" ]
 	then
-		run_minilinux
+		docker exec -it $IMG_NAME zsh
 	else
-		build_minilinux
 		run_minilinux
 	fi
 }
